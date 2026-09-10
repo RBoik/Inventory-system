@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="card form-box">
+    <h4>{{ user.name }}</h4>
+    <p class="muted">@{{ user.username }} · {{ user.role }}</p>
+
+    <hr>
+
+    <h5>Ubah Password</h5>
+
+    <form method="post" action="{{ url_for('change_password') }}">
+        <input class="form-control mb-2" type="password" name="old_password" placeholder="Password lama" required>
+        <input class="form-control mb-2" type="password" name="new_password" placeholder="Password baru" minlength="6" required>
+        <input class="form-control mb-3" type="password" name="confirm_password" placeholder="Konfirmasi" minlength="6" required>
+
+        <button class="btn btn-primary" type="submit">Ubah Password</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h5>Produk yang perlu diperhatikan</h5>
+
+    <div class="table-responsive">
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Produk</th>
+                    <th>Stok</th>
+                    <th>Minimum</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in low_stock_products %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.stock }}</td>
+                    <td>{{ p.minimum_stock }}</td>
+                </tr>
+                {% endfor %}
+
+                {% for p in out_of_stock_products %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td class="text-danger">{{ p.stock }}</td>
+                    <td>{{ p.minimum_stock }}</td>
+                </tr>
+                {% endfor %}
+
+                {% if not low_stock_products and not out_of_stock_products %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">
+                        Tidak ada produk yang perlu diperhatikan.
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

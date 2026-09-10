@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="grid mb-3">
+    <div class="stat">Produk <b>{{ total_products }}</b></div>
+    <div class="stat">Unit <b>{{ total_stock }}</b></div>
+    <div class="stat">Normal <b>{{ normal_stock }}</b></div>
+    <div class="stat">Menipis/Habis <b>{{ low_stock + out_of_stock }}</b></div>
+</div>
+
+<div class="card">
+    <div class="d-flex justify-content-between">
+        <h5>Persediaan</h5>
+
+        {% if session.get('role') == 'admin' %}
+        <div>
+            <a class="btn btn-success" href="{{ url_for('stock_in') }}">Stok Masuk</a>
+            <a class="btn btn-outline-primary" href="{{ url_for('stock_out') }}">Stok Keluar</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Produk</th>
+                    <th>SKU</th>
+                    <th>Stok</th>
+                    <th>Minimum</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.sku }}</td>
+                    <td>{{ p.stock }} {{ p.unit }}</td>
+                    <td>{{ p.minimum_stock }}</td>
+                    <td>
+                        {% if p.stock == 0 %}
+                        <span class="badge text-bg-danger">Habis</span>
+                        {% elif p.stock <= p.minimum_stock %}
+                        <span class="badge text-bg-warning">Menipis</span>
+                        {% else %}
+                        <span class="badge text-bg-success">Normal</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Belum ada data persediaan.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

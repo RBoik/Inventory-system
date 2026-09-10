@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="grid mb-3">
+    <div class="stat">
+        Total Produk
+        <b>{{ total_products }}</b>
+    </div>
+    <div class="stat">
+        Total Stok
+        <b>{{ total_stock }}</b>
+    </div>
+    <div class="stat">
+        Stok Menipis
+        <b>{{ low_stock }}</b>
+    </div>
+    <div class="stat">
+        Stok Habis
+        <b>{{ out_of_stock }}</b>
+    </div>
+</div>
+
+<div class="grid2">
+    <div class="card">
+        <h5>Penjualan Hari Ini</h5>
+        <p class="muted">{{ today_transactions }} transaksi</p>
+        <h2>{{ today_total|rupiah }}</h2>
+
+        <a class="btn btn-primary" href="{{ url_for('sales') }}">
+            Transaksi Baru
+        </a>
+    </div>
+
+    <div class="card">
+        <h5>Transaksi Terbaru</h5>
+
+        <table class="table">
+            <tbody>
+                {% for s in recent_sales %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('sale_detail', sale_id=s.id) }}">
+                            {{ s.invoice_number }}
+                        </a>
+                    </td>
+                    <td class="text-end">
+                        {{ s.total|rupiah }}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>Belum ada transaksi.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

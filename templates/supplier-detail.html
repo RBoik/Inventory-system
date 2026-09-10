@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>{{ supplier.name }}</h3>
+    <p>{{ supplier.phone or '-' }} · {{ supplier.email or '-' }}</p>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produk</th>
+                    <th>Qty</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in movements %}
+                <tr>
+                    <td>{{ m.product.name }}</td>
+                    <td>+{{ m.quantity }}</td>
+                    <td>{{ m.created_at|datetime_id }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Belum ada riwayat stok dari supplier ini.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

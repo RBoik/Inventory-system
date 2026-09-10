@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="card form-box">
+    <form method="post">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nama</label>
+                <input class="form-control" name="name" value="{{ product.name if product else '' }}" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">SKU</label>
+                <input class="form-control" name="sku" value="{{ product.sku if product else '' }}" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Barcode</label>
+                <input class="form-control" name="barcode" value="{{ product.barcode if product else '' }}">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Kategori</label>
+                <select class="form-select" name="category_id" required>
+                    {% for c in categories %}
+                    <option
+                        value="{{ c.id }}"
+                        {% if product and product.category_id == c.id %}selected{% endif %}
+                    >
+                        {{ c.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Harga Modal</label>
+                <input
+                    class="form-control"
+                    type="number"
+                    name="purchase_price"
+                    min="0"
+                    value="{{ product.purchase_price if product else 0 }}"
+                >
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Harga Jual</label>
+                <input
+                    class="form-control"
+                    type="number"
+                    name="selling_price"
+                    min="0"
+                    value="{{ product.selling_price if product else 0 }}"
+                >
+            </div>
+
+            {% if not product %}
+            <div class="col-md-4">
+                <label class="form-label">Stok Awal</label>
+                <input class="form-control" type="number" name="stock" min="0" value="0">
+            </div>
+            {% endif %}
+
+            <div class="col-md-4">
+                <label class="form-label">Minimum Stok</label>
+                <input
+                    class="form-control"
+                    type="number"
+                    name="minimum_stock"
+                    min="0"
+                    value="{{ product.minimum_stock if product else 0 }}"
+                >
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Satuan</label>
+                <input class="form-control" name="unit" value="{{ product.unit if product else 'pcs' }}">
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Deskripsi</label>
+                <textarea class="form-control" name="description" rows="3">{{ product.description if product else '' }}</textarea>
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-3" type="submit">Simpan</button>
+    </form>
+</div>
+{% endblock %}

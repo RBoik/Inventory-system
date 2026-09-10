@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="card form-box">
+    <form method="post">
+        <input class="form-control mb-2" name="name" placeholder="Nama supplier" value="{{ supplier.name if supplier else '' }}" required>
+        <input class="form-control mb-2" name="phone" placeholder="Telepon" value="{{ supplier.phone if supplier else '' }}">
+        <input class="form-control mb-2" type="email" name="email" placeholder="Email" value="{{ supplier.email if supplier else '' }}">
+
+        <textarea class="form-control mb-2" name="address" placeholder="Alamat" rows="3">{{ supplier.address if supplier else '' }}</textarea>
+        <textarea class="form-control mb-3" name="notes" placeholder="Catatan" rows="3">{{ supplier.notes if supplier else '' }}</textarea>
+
+        <button class="btn btn-primary" type="submit">Simpan</button>
+    </form>
+</div>
+{% endblock %}

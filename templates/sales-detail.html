@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="d-flex justify-content-between">
+        <div>
+            <h3>StockFlow</h3>
+            <div>{{ sale.invoice_number }}</div>
+        </div>
+
+        <button
+            class="btn btn-outline-secondary no-print"
+            type="button"
+            onclick="window.print()"
+        >
+            Cetak
+        </button>
+    </div>
+
+    <hr>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produk</th>
+                    <th>Qty</th>
+                    <th>Harga</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in sale.items %}
+                <tr>
+                    <td>{{ i.product.name }}</td>
+                    <td>{{ i.quantity }}</td>
+                    <td>{{ i.price|rupiah }}</td>
+                    <td>{{ i.subtotal|rupiah }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-end">
+        <b>Total: {{ sale.total|rupiah }}</b>
+        <br>
+        Dibayar: {{ sale.paid_amount|rupiah }}
+        <br>
+        Kembalian: {{ sale.change_amount|rupiah }}
+    </div>
+</div>
+{% endblock %}

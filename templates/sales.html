@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title or 'Inventory System' }}
+{% endblock %}
+
+{% block page_title %}
+    {{
+        title or (
+            {
+                'dashboard': 'Dashboard',
+                'products': 'Produk',
+                'categories': 'Kategori',
+                'suppliers': 'Supplier',
+                'inventory': 'Persediaan',
+                'sales': 'Transaksi Penjualan',
+                'sales_history': 'Riwayat Penjualan',
+                'profile': 'Profil',
+                'users': 'Pengguna',
+                'low_stock': 'Stok Menipis'
+            }.get(request.endpoint, 'Inventory System')
+        )
+    }}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <form method="post" action="{{ url_for('create_sale') }}">
+        <div id="items">
+            <div class="row g-2 mb-2">
+                <div class="col-md-7">
+                    <select class="form-select" name="product_id[]" required>
+                        <option value="">Pilih produk</option>
+
+                        {% for p in products %}
+                        <option value="{{ p.id }}">
+                            {{ p.name }} — {{ p.selling_price|rupiah }} (stok {{ p.stock }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <input
+                        class="form-control"
+                        type="number"
+                        name="quantity[]"
+                        min="1"
+                        value="1"
+                        required
+                    >
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="add-item" class="btn btn-outline-primary mb-3">
+            + Item
+        </button>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input class="form-control" name="customer_name" placeholder="Nama pelanggan">
+            </div>
+
+            <div class="col-md-4">
+                <select class="form-select" name="payment_method">
+                    <option value="cash">Cash</option>
+                    <option value="transfer">Transfer</option>
+                    <option value="qris">QRIS</option>
+                    <option value="debit">Debit</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <input
+                    class="form-control"
+                    type="number"
+                    name="paid_amount"
+                    min="0"
+                    placeholder="Nominal dibayar"
+                    required
+                >
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-3" type="submit">
+            Simpan Transaksi
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const items = document.getElementById('items');
+    const addItem = document.getElementById('add-item');
+
+    if (!items || !addItem) {
+        return;
+    }
+
+    addItem.addEventListener('click', function () {
+        const firstItem = items.firstElementChild;
+
+        if (!firstItem) {
+            return;
+        }
+
+        items.insertAdjacentHTML('beforeend', firstItem.outerHTML);
+    });
+});
+</script>
+{% endblock %}
